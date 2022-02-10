@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>简易骰子</title>
+		
+		<style>
+	
+		
+		  body {
+		    width: 50%;
+		    max-width: 800px;
+		    min-width: 480px;
+		    margin: 0 auto;
+		  }
+		
+		  .result {
+		    color: black;
+		    padding: 4px;
+		  }
+		  .reset{
+	/* 		  visibility:hidden; */
+		  }
+		  h1{
+			  color: #d2609bde;
+			  
+		  }
+		</style>
+	</head>
+	<body>
+	
+		<h1>我是一个<span  id="h">骰子</span></h1>		
+		<p>你应该按回车骰点，支持rd和rc，例如：
+		<strong>r1d6或者rc50</strong></p>
+	<!-- 	<a href="#">新建角色</a> -->
+		<div class="form">
+		 <!-- <label for="charac">角色: </label>
+		  <select>
+			  <option value="">--选择--</option>
+		  </select> <br /> -->
+		  
+		  <label for="myNumber">开r: </label>
+		  <input type="text" id="myNumber" class="myNumber">
+		</div>
+		
+		<div class="resultParas">
+		  <p class="list"></p>
+		  <input type="button" value="清空" class="reset">
+		  <p class="result"></p>
+		  <p class="tOrf"></p>
+	
+		</div>
+		         
+		<script>
+		var name=null;
+		function myfun(){
+		 name= prompt("你是？",""); //获取弹窗输入内容
+		 if (name==="切莫"){
+			let box= document.getElementById('h');
+			box.innerHTML='<h1>(　ﾟ 3ﾟ)</h1>';			 	 
+		 }}
+		   
+		 window.onload = myfun();	//在打开网页时执行弹窗
+		 
+		 
+		  const myNumber=document.querySelector('.myNumber');		  
+		  const result=document.querySelector('.result');
+		  const list=document.querySelector('.list');
+		  const tOrf=document.querySelector('.tOrf');
+		  const reset=document.querySelector('.reset');
+		  
+		  var count=1;  //计算r点次数
+		 
+		  
+		  function randomNumber(a){
+			  return Math.floor(Math.random()*a)+1;			  
+		  }              //获取1~a以内的随机数 
+		  
+		  
+		  function start()
+		  {  //起始函数
+		  let number=myNumber.value;
+		  
+		      function range(a){ 
+          	  //输入数字应为1~100
+			  if(isNaN(a)){//不应该是a.isNaN而是isNaN(a)，a是数
+			  	alert("格式错误");
+					return false;
+			  }	else if(a>100){
+				  	alert("输入1~100以内数值");
+					return false;
+				  }else if(a<=0){
+				  	alert("输入1~100以内数值");
+					return false;
+				  }else {
+					 return true;
+				  }
+			  }
+			  
+			  
+		  	if(number.startsWith("rc")){ //判断输入格式，只能以rc、rd、r1d5的格式				
+				let temp=Number(number.substring(2));
+				// console.log(temp);
+				if(range(temp)){
+						check(temp);
+				}
+			}else if(number.startsWith("rd")){//rd开头
+				tOrf.style.visibility='hidden';
+				let temp=Number(number.substring(2));
+				if(range(temp)){
+						let a=randomNumber(temp);
+						result.textContent='rd'+temp+": "+a;
+				}
+			}else if(number.startsWith("r")&&number.split("r")[1]!==""&&number.indexOf("d")!==-1&&number.split("d")[1]!==""){//radb格式，String 对象知识点
+				tOrf.style.visibility='hidden';  
+				let temp=number.split("r")[1].split("d");
+				let a =Number(temp[0]);
+				let b =Number(temp[1]);				
+				if(range(a)&&range(b)){				
+				rd(a,b);
+				 }
+			}else{		
+				myNumber.value='';
+				alert("格式错误");
+			     }		  
+		    }
+		  
+		  
+		  function rd(a,b){
+			  let tem=[];
+			  for(var i=0;i<a;i++){				  
+				  tem.push(randomNumber(b));
+			    }
+			 result.textContent='r'+a+'d'+b+': '+tem;			  
+		  }
+		  
+		  
+		  function ifSuccess(a){
+			  if(a<=0){
+				  return false;
+			  }else if(a<=4){
+				  return true;
+			  }else{
+				  return false;
+			  }
+		  }
+		   
+		
+			function check(a){
+			console.log(a);	
+			let number=a;
+			let rNumber=randomNumber(100);	
+			
+			tOrf.style.visibility='visible';
+			if(count == 1){
+				list.textContent='上次骰点:';			
+			    }list.textContent +=rNumber+' ';			   
+			   result.textContent=name+'骰点：'+rNumber+'/'+number;		   
+			   myNumber.style.font='bold';
+			   
+			if(ifSuccess(rNumber)){				
+				tOrf.textContent='大成功！';
+				tOrf.style.background='red';
+				
+			}else if(rNumber<=number){
+				tOrf.textContent='成功！';
+				tOrf.style.background='yellow';
+						
+			}else if(rNumber>95){
+				tOrf.textContent='大失败！';
+				tOrf.style.background='black';
+				
+			}else{
+				tOrf.textContent='失败！';
+				tOrf.style.background='dimgrey';			
+			}
+			count++;					
+	      	}
+		
+		myNumber.addEventListener('keydown',function(e){//回车键监听器
+			if(e.keyCode=='13'){
+				start();
+				myNumber.value='';
+				myNumber.focus();}
+		});		
+		
+		reset.addEventListener('click',function(e){//点击监听器
+			count=1;
+			list.textContent='';
+		});
+		
+		
+		
+		
+		</script>
+	</body>
