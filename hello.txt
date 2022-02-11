@@ -1,4 +1,0 @@
-hello world test branch commit
-hello world
-my text branch commit
-master commit
